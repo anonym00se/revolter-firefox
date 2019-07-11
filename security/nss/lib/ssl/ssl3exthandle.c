@@ -78,7 +78,10 @@ ssl3_ClientSendServerNameXtn(const sslSocket *ss, TLSExtensionData *xtnData,
 
     /* We only make an ESNI private key if we are going to
      * send ESNI. */
-    if (ss->xtnData.esniPrivateKey != NULL) {
+    if (ss->xtnData.esniPrivateKey == NULL) {
+        /** skip sending SNI Extension */
+        return SECSuccess;
+    } else {
         url = ss->esniKeys->dummySni;
     }
 
