@@ -370,7 +370,7 @@ def lib_path_for(host_or_target):
 
         libs = []
         lib_env = os.environ.get('LIB')
-        if lib_env and not is_host:
+        if lib_env:
             libs.extend(lib_env.split(os.pathsep))
         libs.extend((
             os.path.join(vc_path, 'lib', sdk_target),
