@@ -370,7 +370,7 @@ def lib_path_for(host_or_target):
 
         libs = []
         lib_env = os.environ.get('LIB')
-        if lib_env:
+        if lib_env and not is_host:
             libs.extend(lib_env.split(os.pathsep))
         libs.extend((
             os.path.join(vc_path, 'lib', sdk_target),
@@ -380,6 +380,10 @@ def lib_path_for(host_or_target):
         ))
         if dia_sdk_lib_dir:
             libs.append(dia_sdk_lib_dir)
+        host_lib_env = os.environ.get('HOST_LIB')
+        if host_lib_env:
+            # `export HOST_LIB="/path/to/lib/directory;xxx"` in mozconfig
+            libs.extend(host_lib_env.split(os.pathsep))
         return libs
 
     return lib_path
