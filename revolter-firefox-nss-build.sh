@@ -16,7 +16,7 @@ $PYTHON_BIN build/variables.py source_repo_header > "$TOP_OBJDIR/source-repo.h"
 
 mkdir "$TOP_OBJDIR/config/external/ffi/.deps"  # bug
 
-timeout --signal=9 15s ./mach build  # bug
+timeout --signal=9 30s ./mach build  # bug
 
 make -C "$TOP_OBJDIR" recurse_export
 
