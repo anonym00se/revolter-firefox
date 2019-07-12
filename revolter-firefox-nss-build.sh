@@ -60,3 +60,5 @@ fi
 
 mkdir -p $DIST_DIR
 cp $NSS3_BIN $DIST_DIR
+
+cp $TOP_OBJDIR/dist/bin/libssl3.so $DIST_DIR || echo  # *nix
