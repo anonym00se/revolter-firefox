@@ -43,5 +43,10 @@ make -C "$TOP_OBJDIR" recurse_export
 ./mach build ./memory/mozalloc/
 ./mach build ./mozglue/misc/
 ./mach build ./ipc/mscom/mozglue/
+./mach build ./mfbt || echo  # catch error
 ./mach build ./mozglue/build/
 ./mach build ./security/nss/
+
+PLATFORM=$(echo $TOP_OBJDIR | sed 's/^obj-//')
+mkdir -p dist/$PLATFORM/
+cp $TOP_OBJDIR/dist/bin/nss3.dll dist/$PLATFORM/
