@@ -48,5 +48,6 @@ make -C "$TOP_OBJDIR" recurse_export
 ./mach build ./security/nss/
 
 PLATFORM=$(echo $TOP_OBJDIR | sed 's/^obj-//')
-mkdir -p dist/$PLATFORM/
-cp $TOP_OBJDIR/dist/bin/nss3.dll dist/$PLATFORM/
+DIST_DIR="dist/$PLATFORM/"
+mkdir -p $DIST_DIR
+cp $TOP_OBJDIR/dist/bin/nss3.dll $DIST_DIR

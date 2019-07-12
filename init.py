@@ -10,10 +10,20 @@ configpath = objdir + "/config.status"
 inputpath = topdir + "/mozilla-config.h.in"
 outputpath = objdir + "/mozilla-config.h"
 
+
+def findLineNumber(lines, regex, start=0):
+    r = re.compile(regex, re.U)
+    for i in range(start, len(lines)):
+        l = lines[i]
+        match = r.search(l)
+        if match:
+            return i
+
+
 with open(configpath, 'rU') as configf:
     lines = configf.readlines()
-    bindex = 826
-    eindex = 940
+    bindex = findLineNumber(lines, "^defines = encode\({$") + 1  # 826
+    eindex = findLineNumber(lines, "^}, encoding\)$", bindex)  # 940
     lines = lines[bindex:eindex]
     jsondata = "{" + "".join(lines) + "}"
     config = dict(eval(jsondata))  # unsafe
