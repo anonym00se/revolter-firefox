@@ -36,6 +36,7 @@ make -C "$TOP_OBJDIR" recurse_export
 ./mach build ./security/nss/lib/nss/nss_nss_static/
 ./mach build ./security/nss/lib/nss/nss_nss3_static/
 ./mach build ./db/sqlite3/src/
+./mach build ./config/external/sqlite/
 ./mach build ./security/nss/lib/util/util_nssutil/
 ./mach build ./security/nss/lib/pkcs12/pkcs12_pkcs12/
 ./mach build ./security/nss/lib/pkcs7/pkcs7_pkcs7/
@@ -52,5 +53,10 @@ make -C "$TOP_OBJDIR" recurse_export
 
 PLATFORM=$(echo $TOP_OBJDIR | sed 's/^obj-//')
 DIST_DIR="dist/$PLATFORM/"
+NSS3_BIN="$TOP_OBJDIR/dist/bin/nss3.dll"  # windows
+if [ ! -f "$NSS3_BIN" ]; then
+    NSS3_BIN="$TOP_OBJDIR/dist/bin/libnss3.so"  # *nix
+fi
+
 mkdir -p $DIST_DIR
-cp $TOP_OBJDIR/dist/bin/nss3.dll $DIST_DIR
+cp $NSS3_BIN $DIST_DIR
