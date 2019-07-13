@@ -53,6 +53,7 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 * reddit
 * pixiv
 * Medium
+* 中国数字时代 chinadigitaltimes.net
 * Steam: steamcommunity.com (Steam 社区、创意工坊)
 * Amazon: amazon.co.jp (日本亚马逊) 、amazon.com (美国亚马逊)
 * 所有使用 cloudflare 的网站
