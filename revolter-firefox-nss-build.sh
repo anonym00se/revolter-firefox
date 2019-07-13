@@ -33,6 +33,8 @@ make -C "$TOP_OBJDIR" recurse_export
 ./mach build ./security/nss/lib/dev/dev_nssdev/
 ./mach build ./security/nss/lib/pki/pki_nsspki/
 ./mach build ./security/nss/lib/pk11wrap/pk11wrap_pk11wrap/
+./mach build ./security/nss/lib/util/util_nssutil
+./mach build ./security/nss/lib/util/util_nssutil3
 ./mach build ./security/nss/lib/nss/nss_nss_static/
 ./mach build ./security/nss/lib/nss/nss_nss3_static/
 ./mach build ./db/sqlite3/src/
