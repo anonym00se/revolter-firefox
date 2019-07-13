@@ -3,7 +3,7 @@
 
 > 对 SNI RST 说不！
 
-> 让 firefox 不发送 SNI 信息以绕过 SNI RST
+> 如果网站支持 ESNI，则使用 ESNI，否则让 firefox 不发送 SNI 信息以绕过 SNI RST
 
 > 修改 Firefox (依赖库 nss) 的源代码, 使其在发送 TLS 握手 ClientHello 消息时不发送 SNI 扩展，拔除 SNI！
 
@@ -28,10 +28,13 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 3. 启用 ESNI 支持  
 在 firefox 中打开 `about:config`，搜索 `network.security.esni.enabled`，将值变为 `true`
 
-4. 测试 DoH 和 ESNI 已经启用  
+4. 重启浏览器
+如果无法访问任何网站，请尝试更换 DoH 服务器
+
+5. 测试 DoH 和 ESNI 已经启用  
 打开 https://www.cloudflare.com/ssl/encrypted-sni/ , 点击 `Check My Browser` ，会看到测试全部通过
 
-5. [下载](https://github.com/Xmader/revolter-firefox/releases) nss3.dll 文件 (Windows) 或 libnss3.so 和 libssl3.so 文件 (Linux)，覆盖到 firefox 的安装目录中  
+6. [下载](https://github.com/Xmader/revolter-firefox/releases) nss3.dll 文件 (Windows) 或 libnss3.so 和 libssl3.so 文件 (Linux)，覆盖到 firefox 的安装目录中  
 记得备份原始文件
 
 ## 备注
@@ -39,7 +42,7 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 * 无法解决网站的 IP 地址被屏蔽的问题
 * 可以解决 DNS 污染和 SNI RST 的问题
 * 有些网站依赖于 SNI 扩展 (TLS 握手过程中在 ClientHello 中发送的扩展协议)，可能会造成原本可以访问的网站变得无法访问
-* 可以使用 firefox 便携版，在访问网站时使用不同的浏览器安装，以应对上述情况
+* 可以安装 firefox 到不同目录中，在访问网站时使用不同的浏览器安装，以应对上述情况
 
 ## 测试可用网站
 
