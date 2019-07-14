@@ -43,6 +43,7 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 * 可以解决 DNS 污染和 SNI RST 的问题
 * 有些网站依赖于 SNI 扩展 (TLS 握手过程中在 ClientHello 中发送的扩展协议)，可能会造成原本可以访问的网站变得无法访问
 * 可以安装 firefox 到不同目录中，在访问网站时使用不同的浏览器安装，以应对上述情况
+* 仅支持 64位 Linux 和 Windows 操作系统 (amd64) ，如果需要在 32位 操作系统或不同构架上使用，请自行构建
 
 ## 测试可用网站
 
