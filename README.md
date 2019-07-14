@@ -34,7 +34,7 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 5. 测试 DoH 和 ESNI 已经启用  
 打开 https://www.cloudflare.com/ssl/encrypted-sni/ , 点击 `Check My Browser` ，会看到测试全部通过
 
-6. [下载](https://github.com/Xmader/revolter-firefox/releases) nss3.dll 文件 (Windows) 或 libnss3.so 和 libssl3.so 文件 (Linux)，覆盖到 firefox 的安装目录中  
+6. [下载](https://github.com/Xmader/revolter-firefox/releases) nss3.dll 文件 (Windows) 或 libssl3.so 文件 (Linux)，覆盖到 firefox 的安装目录中  
 记得备份原始文件
 
 ## 备注

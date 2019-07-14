@@ -55,12 +55,10 @@ make -C "$TOP_OBJDIR" recurse_export
 
 PLATFORM=$(echo $TOP_OBJDIR | sed 's/^obj-//')
 DIST_DIR="dist/$PLATFORM/"
-NSS3_BIN="$TOP_OBJDIR/dist/bin/nss3.dll"  # windows
-if [ ! -f "$NSS3_BIN" ]; then
-    NSS3_BIN="$TOP_OBJDIR/dist/bin/libnss3.so"  # *nix
+ARTIFACT_BIN="$TOP_OBJDIR/dist/bin/nss3.dll"  # windows
+if [ ! -f "$ARTIFACT_BIN" ]; then
+    ARTIFACT_BIN="$TOP_OBJDIR/dist/bin/libssl3.so"  # *nix
 fi
 
 mkdir -p $DIST_DIR
-cp $NSS3_BIN $DIST_DIR
-
-cp $TOP_OBJDIR/dist/bin/libssl3.so $DIST_DIR || echo  # *nix
+cp $ARTIFACT_BIN $DIST_DIR
