@@ -78,11 +78,14 @@ ssl3_ClientSendServerNameXtn(const sslSocket *ss, TLSExtensionData *xtnData,
 
     /* We only make an ESNI private key if we are going to
      * send ESNI. */
-    if (ss->xtnData.esniPrivateKey == NULL) {
-        /** skip sending SNI Extension */
-        return SECSuccess;
-    } else {
+    if (ss->xtnData.esniPrivateKey != NULL) {  // ESNI enabled
         url = ss->esniKeys->dummySni;
+    } else {
+        url = revolter_getSNIStr(url);
+        if (url == NULL) {
+            /* skip sending SNI Extension */
+            return SECSuccess;
+        }
     }
 
     if (!ssl_ShouldSendSNIExtension(ss, url)) {
