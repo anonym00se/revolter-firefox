@@ -22,7 +22,7 @@
 #define PATH_SEP "/"
 
 static char* getExecutableDir() {
-    char buffer[PATH_MAX];
+    char buffer[PATH_MAX] = "";
     char* path = buffer;
     realpath("/proc/self/exe", buffer);
     return dirname(path);
@@ -265,7 +265,7 @@ static ConfigItem* readConfig() {
     char* configFilePath = strcat(strcat(execPath, PATH_SEP), "sni.config");
     // printf("%s\n", configFilePath);
 
-    if (_access(configFilePath, 0) != -1) {  // file exists
+    if (access(configFilePath, 0) != -1) {  // file exists
 
         FILE* stream;
         char* line = NULL;
@@ -315,6 +315,8 @@ static ConfigItem* readConfig() {
     }
 
     configRead = true;
+
+    return config;
 }
 
 static bool regexpTest(char* regexp, char* teststr) {
