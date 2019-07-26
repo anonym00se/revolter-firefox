@@ -17,6 +17,7 @@
 #if defined(__linux__)
 #include <libgen.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define PATH_SEP "/"
 
