@@ -19,7 +19,7 @@
 
 1. 下载安装 firefox 68esr  
 https://www.mozilla.org/en-US/firefox/organizations/all/  
-https://archive.mozilla.org/pub/firefox/releases/68.0esr/  
+https://archive.mozilla.org/pub/firefox/releases/68.0.1esr/  
 （正常版 firefox 68 也可以使用）
 
 2. 启用 DNS over HTTPS (DoH)   
@@ -59,6 +59,7 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 * Medium
 * 中国数字时代 chinadigitaltimes.net
 * Steam: steamcommunity.com (Steam 社区、创意工坊)
+* cloudflare-ipfs.com
 * Amazon: amazon.co.jp (日本亚马逊) 、amazon.com (美国亚马逊)
 * 所有使用 cloudflare 的网站
 * *.github.io (使用 Github Pages 的网站)
