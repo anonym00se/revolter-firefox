@@ -17,6 +17,7 @@
 #include "ssl3exthandle.h"
 #include "tls13esni.h"
 #include "tls13exthandle.h" /* For tls13_ServerSendStatusRequestXtn. */
+#include "sni-config.h"
 
 PRBool
 ssl_ShouldSendSNIExtension(const sslSocket *ss, const char *url)

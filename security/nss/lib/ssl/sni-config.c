@@ -15,9 +15,9 @@
 #include "re.h"
 
 #if defined(__linux__)
+#include <errno.h>
 #include <libgen.h>
 #include <unistd.h>
-#include <errno.h>
 
 #define PATH_SEP "/"
 
@@ -174,18 +174,7 @@ ssize_t getline(char** lineptr, size_t* n, FILE* stream) {
 }
 #endif
 
-typedef enum {
-    DROP,
-    BYPASS,
-    REPLACE,
-} ConfigMethod;
-
-typedef struct ConfigItem {
-    bool isRegexp;         // whether hostname is a regexp
-    char* hostname;        // the hostname to match or a /regexp/ (prefix ^ and suffix & will be added when parsing)
-    unsigned char method;  // enum: [0] drop [1] bypass [2] replace
-    char* replaceSNI;      // required when method == REPLACE
-} ConfigItem;
+#include "sni-config.h"
 
 ConfigItem defaultConfig[] = {
     {true, ".*", DROP},  // drop any hostnames
@@ -204,7 +193,7 @@ static char* getCapStr(struct slre_cap cap) {
         return "";
     }
 
-    char* str = (char*)malloc(strlen(cap.ptr));
+    char* str = (char*)malloc(strlen(cap.ptr) + 1);
     strcpy(str, cap.ptr);
     str[cap.len] = '\0';
     return str;
@@ -229,7 +218,7 @@ static char* formatReplaceSNI(char* str) {
 
     struct slre_cap* caps = calloc(1, sizeof(struct slre_cap));
 
-    int match = slre_match(replaceSNIRegex, str, strlen(str), caps, 1, 0);
+    int match = slre_match(replaceSNIRegex, str, strlen(str) + 1, caps, 1, 0);
 
     struct slre_cap c = caps[0];
     free(caps);
@@ -248,7 +237,7 @@ static char* getHostnameRegexp(char* str) {
 
     struct slre_cap* caps = calloc(1, sizeof(struct slre_cap));
 
-    int match = slre_match(hostRegex, str, strlen(str), caps, 1, 0);
+    int match = slre_match(hostRegex, str, strlen(str) + 1, caps, 1, 0);
 
     struct slre_cap c = caps[0];
     free(caps);
@@ -257,7 +246,7 @@ static char* getHostnameRegexp(char* str) {
         return NULL;
     } else {
         char* hostnameR = getCapStr(c);
-        char* buffer = (char*)malloc(strlen(hostnameR) + 2);
+        char* buffer = (char*)malloc(strlen(hostnameR) + 3);
         strcpy(buffer, "^");
         return strcat(strcat(buffer, hostnameR), "$");
     }
@@ -276,7 +265,7 @@ static ConfigItem* readConfig() {
     char* configFilePath = strcat(strcat(execPath, PATH_SEP), "sni.config");
     // printf("%s\n", configFilePath);
 
-    if (access(configFilePath, 0) != -1) {  // file exists
+    if (_access(configFilePath, 0) != -1) {  // file exists
 
         FILE* stream;
         char* line = NULL;
@@ -290,7 +279,7 @@ static ConfigItem* readConfig() {
         while (getline(&line, &len, stream) != -1) {
             struct slre_cap* caps = calloc(4, sizeof(struct slre_cap));
 
-            int match = slre_match(configRegex, line, strlen(line), caps, 4, 0);
+            int match = slre_match(configRegex, line, strlen(line) + 1, caps, 4, 0);
 
             if (match > 0) {
                 _config = (ConfigItem*)realloc(_config, (configItemsCount + 1) * sizeof(ConfigItem));
@@ -329,7 +318,7 @@ static ConfigItem* readConfig() {
 }
 
 static bool regexpTest(char* regexp, char* teststr) {
-    int match = slre_match(regexp, teststr, strlen(teststr), NULL, 0, 0);
+    int match = slre_match(regexp, teststr, strlen(teststr) + 1, NULL, 0, 0);
     return match > 0;
 }
 
@@ -337,7 +326,8 @@ static bool regexpTest(char* regexp, char* teststr) {
 char* revolter_getSNIStr(char* url) {
     readConfig();
 
-    char* _url = (char*)malloc(strlen(url));
+    // copy string
+    char* _url = (char*)malloc(strlen(url) + 1);
     strcpy(_url, url);
 
     for (int i = configItemsCount - 1; i >= 0; i--) {  // reverse, match the last item at first
