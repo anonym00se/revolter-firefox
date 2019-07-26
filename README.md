@@ -1,11 +1,13 @@
 
 # revolter-firefox
 
-> 对 SNI RST 说不！
+> 对 SNI RST 说不！ 翻墙新方式！
 
-> 如果网站支持 ESNI，则使用 ESNI，否则让 firefox 不发送 SNI 信息以绕过 SNI RST
+> 如果网站支持 ESNI，则使用 ESNI，否则可以让 firefox 不发送 SNI 信息以绕过 SNI RST
 
-> 修改 Firefox (依赖库 nss) 的源代码, 使其在发送 TLS 握手 ClientHello 消息时不发送 SNI 扩展，拔除 SNI！
+> 修改 Firefox (依赖库 nss) 的源代码, 使其在发送 TLS 握手 ClientHello 消息时可以不发送 SNI 扩展，拔除 SNI！
+
+> 支持通过[编辑配置文件](#关于配置文件)，对在每一个网站上的行为进行精细化配置 (去除、保留或替换 SNI 信息)
 
 [![构建状态](https://dev.azure.com/xmader/apps/_apis/build/status/revolter-firefox)](https://dev.azure.com/xmader/apps/_build/latest?definitionId=21) 
 
@@ -41,9 +43,8 @@ https://archive.mozilla.org/pub/firefox/releases/68.0.1esr/
 
 * 无法解决网站的 IP 地址被屏蔽的问题
 * 可以解决 DNS 污染和 SNI RST 的问题
-* 有些网站依赖于 SNI 扩展 (TLS 握手过程中在 ClientHello 中发送的扩展协议)，可能会造成原本可以访问的网站变得无法访问
-* 可以安装 firefox 到不同目录中，在访问网站时使用不同的浏览器安装，以应对上述情况
-* 仅支持 64位 Linux 和 Windows 操作系统 (amd64) ，如果需要在 32位 操作系统或不同构架上使用，请自行构建
+* 有些网站需要使用发送的 SNI 扩展 (TLS 握手过程中在 ClientHello 中发送的扩展协议) 返回 TLS 证书，可能会造成原本可以访问的网站变得无法访问，可以通过[编辑配置文件](#关于配置文件)解决
+* 仅支持 64位 (amd64) Linux 和 Windows 操作系统 ，如果需要在 32位 操作系统或不同构架上使用，请自行构建
 
 ## 测试可用网站
 
@@ -65,6 +66,46 @@ https://archive.mozilla.org/pub/firefox/releases/68.0.1esr/
 * *.github.io (使用 Github Pages 的网站)
 
 欢迎补充
+
+## 关于配置文件
+
+配置文件文件为 firefox 安装目录 (`firefox.exe` 可执行文件所在目录) 下的 `sni.config` 文件，请自行创建。
+
+[默认规则](/security/nss/lib/ssl/sni-config.c#L179): 不发送任何网站的 SNI 信息  
+（配置文件不会覆盖默认规则，如果需要，请添加一条优先级更高的对应规则）
+
+在配置文件越下方的规则优先级越高 （默认规则的优先级最低）
+
+当一条规则匹配到了网站的 hostname (主机名、域名) ，不会继续再匹配优先级更低的规则了
+
+### 规则格式
+
+```
+<主机名>, <方法/行为>, <用作替换的 SNI 信息 (如果方法为 replace)>
+```
+
+* `主机名` 支持使用正则表达式 （仅支持[有限的子集](https://github.com/cesanta/slre/blob/master/docs/syntax.md)，外加 `\w` 和 `\W` [字符类别匹配](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp#character-classes)，不支持嵌套括号），写在两个 `/` 符号之间 ~~（确实很废，以后会优化的）~~ ~~（至少比 glob 强）~~
+
+* `方法`: 
+    * `drop` 去除 SNI 信息
+    * `bypass` 保留 SNI 信息
+    * `replace` 替换 SNI 信息 (需要在规则种加上加上用作替换的 SNI 信息)
+
+任何不符合上述格式开始的行都会被视为注释，上述格式后加上空格可自由添加内容作为注释 ~~（十分宽松的配置文件语法）~~
+
+### 示例
+
+`sni.config`
+
+```c
+example.com,bypass  // 我是注释
+我也是注释
+www.google.com, drop, 1  // 逗号后可添加任意数量空格，如果方法不是 `replace`, 用作替换的 SNI 信息会被忽略
+
+/\w+\.wikipedia\.org/, replace, en.wikipedia.org  // 匹配任意语言的维基百科页面，将其 SNI 信息替换为 `en.wikipedia.org` (并不会循环替换)
+
+/.+\.blogspot\.com/, bypass
+```
 
 ## 自行构建
 
