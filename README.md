@@ -69,13 +69,60 @@ https://archive.mozilla.org/pub/firefox/releases/68.0esr/
 
 以在 Linux (Ubuntu) 上构建为例
 
+### 构建 Linux 版
+
 ```sh
 echo "
 ac_add_options MOZ_PGO=1
 ac_add_options --disable-av1
 " > mozconfig
+
 chmod +x ./revolter-firefox-nss-build.sh
 chmod +x ./mach
+
+./mach bootstrap --application-choice=browser --no-interactive
+./revolter-firefox-nss-build.sh
+```
+
+### 构建 Windows 版
+
+```sh
+# install wine
+sudo dpkg --add-architecture i386
+curl https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add
+sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
+sudo add-apt-repository ppa:wine/wine-builds -y 
+sudo apt update
+sudo apt install -y winehq-stable
+
+# download build tools
+export TOOLTOOL_DIR=$HOME/.revolter-firefox-build
+mkdir -p $TOOLTOOL_DIR
+cd $TOOLTOOL_DIR
+wget \
+    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-clang-8-mingw-x64.latest/artifacts/public/build/clangmingw.tar.xz \
+    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.mingw32-rust-1.36.latest/artifacts/public/build/rustc.tar.xz \
+    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-cbindgen.latest/artifacts/public/build/cbindgen.tar.xz \
+    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v2.linux64-mingw-fxc2-x86.latest/artifacts/public/build/fxc2.tar.xz
+ls *.tar.xz | xargs -n1 tar -xJf
+cd -
+
+sudo mkdir -p /builds/worker/workspace/build/src/
+cd /builds/worker/workspace/build/src/
+wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mingw32-nsis.latest/artifacts/public/build/nsis.tar.xz
+tar -xJf nsis.tar.xz
+cd -
+
+# mozconfig
+echo "
+ac_add_options MOZ_PGO=1
+ac_add_options --disable-av1
+" > mozconfig
+cat mozconfig-win >> mozconfig
+
+chmod +x ./revolter-firefox-nss-build.sh
+chmod +x ./mach
+
 ./mach bootstrap --application-choice=browser --no-interactive
 ./revolter-firefox-nss-build.sh
 ```
