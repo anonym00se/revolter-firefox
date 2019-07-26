@@ -218,7 +218,7 @@ static char* formatReplaceSNI(char* str) {
 
     struct slre_cap* caps = calloc(1, sizeof(struct slre_cap));
 
-    int match = slre_match(replaceSNIRegex, str, strlen(str) + 1, caps, 1, 0);
+    int match = slre_match(replaceSNIRegex, str, strlen(str), caps, 1, 0);
 
     struct slre_cap c = caps[0];
     free(caps);
@@ -237,7 +237,7 @@ static char* getHostnameRegexp(char* str) {
 
     struct slre_cap* caps = calloc(1, sizeof(struct slre_cap));
 
-    int match = slre_match(hostRegex, str, strlen(str) + 1, caps, 1, 0);
+    int match = slre_match(hostRegex, str, strlen(str), caps, 1, 0);
 
     struct slre_cap c = caps[0];
     free(caps);
@@ -279,7 +279,7 @@ static ConfigItem* readConfig() {
         while (getline(&line, &len, stream) != -1) {
             struct slre_cap* caps = calloc(4, sizeof(struct slre_cap));
 
-            int match = slre_match(configRegex, line, strlen(line) + 1, caps, 4, 0);
+            int match = slre_match(configRegex, line, strlen(line), caps, 4, 0);
 
             if (match > 0) {
                 _config = (ConfigItem*)realloc(_config, (configItemsCount + 1) * sizeof(ConfigItem));
@@ -320,7 +320,7 @@ static ConfigItem* readConfig() {
 }
 
 static bool regexpTest(char* regexp, char* teststr) {
-    int match = slre_match(regexp, teststr, strlen(teststr) + 1, NULL, 0, 0);
+    int match = slre_match(regexp, teststr, strlen(teststr), NULL, 0, 0);
     return match > 0;
 }
 
