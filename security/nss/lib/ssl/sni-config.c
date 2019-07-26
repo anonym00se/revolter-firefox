@@ -337,10 +337,13 @@ static bool regexpTest(char* regexp, char* teststr) {
 char* revolter_getSNIStr(char* url) {
     readConfig();
 
+    char* _url = (char*)malloc(strlen(url));
+    strcpy(_url, url);
+
     for (int i = configItemsCount - 1; i >= 0; i--) {  // reverse, match the last item at first
         ConfigItem item = config[i];
 
-        bool hostnameMatched = (item.isRegexp && regexpTest(item.hostname, url)) || strcmp(item.hostname, url) == 0;
+        bool hostnameMatched = (item.isRegexp && regexpTest(item.hostname, _url)) || strcmp(item.hostname, _url) == 0;
 
         if (!hostnameMatched) {
             continue;
@@ -351,7 +354,7 @@ char* revolter_getSNIStr(char* url) {
                 return NULL;
 
             case BYPASS:
-                return url;
+                return _url;
 
             case REPLACE:
                 return item.replaceSNI;
@@ -359,7 +362,7 @@ char* revolter_getSNIStr(char* url) {
     }
 
     // fallback: add SNI as normal
-    return url;
+    return _url;
 }
 
 static void _print_config() {
