@@ -1,0 +1,86 @@
+dist: xenial
+
+language: c
+
+compiler: clang
+
+git:
+  depth: 1
+
+branches:
+  only:
+    - master
+
+env:
+  - TOOLTOOL_DIR=$TRAVIS_BUILD_DIR/tools
+  - SHELL=/bin/bash
+  - REVOLTER_FIREFOX_VERSION=v68.0.$TRAVIS_BUILD_NUMBER
+
+matrix:
+  include:
+    - name: "build for Linux"
+    - name: "build for Windows"
+      env:
+        - BUILD_FOR_WINDOWS=true
+      before_install:
+      # download tools
+        - mkdir -p $TOOLTOOL_DIR
+        - cd $TOOLTOOL_DIR && pwd
+        - wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-clang-8-mingw-x64.latest/artifacts/public/build/clangmingw.tar.xz &&
+          wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.mingw32-rust-1.36.latest/artifacts/public/build/rustc.tar.xz &&
+          wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-cbindgen.latest/artifacts/public/build/cbindgen.tar.xz &&
+          wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mingw32-nsis.latest/artifacts/public/build/nsis.tar.xz &&
+          wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v2.linux64-mingw-fxc2-x86.latest/artifacts/public/build/fxc2.tar.xz
+        - ls *.tar.xz | xargs -n1 tar -xJf
+        - ls
+        - cd - && pwd
+      # decompress nsis
+        - mkdir -p /builds/worker/workspace/build/src/
+        - cd /builds/worker/workspace/build/src/
+        - cp $TOOLTOOL_DIR/nsis.tar.xz .
+        - tar -xJf nsis.tar.xz
+        - cd - && pwd
+      install:
+      # install wine
+        - sudo dpkg --add-architecture i386
+        - curl https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add
+        - sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
+        - sudo add-apt-repository ppa:wine/wine-builds -y 
+        - sudo apt-get update
+        - sudo apt-get install -y wine-stable-amd64 wine-stable winehq-stable
+        - wine --version
+
+before_script:
+  - building $REVOLTER_FIREFOX_VERSION
+# mozconfig
+  - echo -e "ac_add_options MOZ_PGO=1\nac_add_options --disable-av1\n" > mozconfig
+# make sh file executable
+  - chmod +x ./revolter-firefox-nss-build.sh
+# mozconfig for windows build
+  - $BUILD_FOR_WINDOWS && cat mozconfig-win >> mozconfig
+  - cat mozconfig
+
+script:
+# mach bootstrap
+  - ./mach bootstrap --application-choice=browser --no-interactive
+# build
+  - ./revolter-firefox-nss-build.sh
+
+after_success:
+  - cd $TRAVIS_BUILD_DIR
+# check artifact
+  - ls -al
+  - ls dist/* -al
+  - ls dist/**/*.@(dll|so)
+
+deploy:
+  - provider: releases
+    edge: true
+    tag_name: $REVOLTER_FIREFOX_VERSION
+    target_commitish: master
+    name: $REVOLTER_FIREFOX_VERSION
+    release_notes: "&nbsp;"
+    file: "/dist/**/*.@(dll|so)"
+    file_glob: true
+    on:
+      tags: true
