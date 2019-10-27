@@ -23,11 +23,11 @@ matrix:
       # download tools
         - mkdir -p $TOOLTOOL_DIR
         - cd $TOOLTOOL_DIR && pwd
-        - wget -nv https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-clang-8-mingw-x64.latest/artifacts/public/build/clangmingw.tar.xz &&
-          wget -nv https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.mingw32-rust-1.36.latest/artifacts/public/build/rustc.tar.xz &&
-          wget -nv https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-cbindgen.latest/artifacts/public/build/cbindgen.tar.xz &&
-          wget -nv https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mingw32-nsis.latest/artifacts/public/build/nsis.tar.xz &&
-          wget -nv https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v2.linux64-mingw-fxc2-x86.latest/artifacts/public/build/fxc2.tar.xz
+        - wget -nv https://taskcluster-artifacts.net/E6GMKuBBTyi0SllWEAtxwg/0/public/build/clangmingw.tar.xz  # https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-clang-8-mingw-x64.latest/artifacts/public/build/clangmingw.tar.xz
+        - wget -nv https://taskcluster-artifacts.net/X2KEt8RQTZGpxxCx__ksXQ/0/public/build/rustc.tar.xz       # https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.mingw32-rust-1.36.latest/artifacts/public/build/rustc.tar.xz
+        - wget -nv https://taskcluster-artifacts.net/faq0ZDr8R3Ws89rRTVzjIg/0/public/build/cbindgen.tar.xz    # https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-cbindgen.latest/artifacts/public/build/cbindgen.tar.xz
+        - wget -nv https://taskcluster-artifacts.net/beAXMRJZT1a7zg6MbA-y-w/0/public/build/nsis.tar.xz        # https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mingw32-nsis.latest/artifacts/public/build/nsis.tar.xz
+        - wget -nv https://taskcluster-artifacts.net/Ns7ruxQ9Sjquyyv1J3zpCA/0/public/build/fxc2.tar.xz        # https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v2.linux64-mingw-fxc2-x86.latest/artifacts/public/build/fxc2.tar.xz
         - ls *.tar.xz | xargs -n1 tar -xJf
         - ls
         - cd -
@@ -54,16 +54,19 @@ before_script:
 # make sh file executable
   - chmod +x ./revolter-firefox-nss-build.sh
 # mozconfig for windows build
-  - $BUILD_FOR_WINDOWS && cat mozconfig-win >> mozconfig
+  - if [[ $BUILD_FOR_WINDOWS = true ]]; then
+      cat mozconfig-win >> mozconfig; 
+    fi
   - cat mozconfig
-
-script:
 # mach bootstrap
   - sudo apt-get update
   - sudo apt-get install -y autoconf2.13 build-essential nodejs python-dev python-pip python-setuptools unzip uuid zip
+  - sudo apt-get install -y llvm-6.0
   - sudo ./mach bootstrap --application-choice=browser --no-interactive
+
+script:
 # build
-  - ./revolter-firefox-nss-build.sh
+  - sudo ./revolter-firefox-nss-build.sh
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
@@ -72,14 +75,19 @@ after_success:
   - ls dist/* -al
   - ls dist/**/*.@(dll|so)
 
+before_deploy:
+# tag this commit
+  - git config --local user.name "$GITHUB_TAG_USERNAME"
+  - git config --local user.email "$GITHUB_TAG_EMAIL"
+  - git tag $REVOLTER_FIREFOX_VERSION
+
 deploy:
   - provider: releases
     edge: true
     tag_name: $REVOLTER_FIREFOX_VERSION
-    target_commitish: master
+    target_commitish: $TRAVIS_COMMIT
     name: $REVOLTER_FIREFOX_VERSION
     release_notes: "&nbsp;"
     file: "/dist/**/*.@(dll|so)"
     file_glob: true
-    on:
-      tags: true
+
