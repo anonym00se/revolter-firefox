@@ -1,6 +1,10 @@
 
 # revolter-firefox
 
+**项目的原作者 [Xmader](https://github.com/Xmader/) 于前不久惨遭喝茶（据信），此为备份，欢迎各位有志之士和我一起重启项目开发**
+
+**原项目消失和 v2ray 的作者失联几乎同时，怀疑是有计划地针对翻墙软件的作者进行**
+
 > 对 SNI RST 说不！ 翻墙新方式！
 
 > 如果网站支持 ESNI，则使用 ESNI，否则可以让 firefox 不发送 SNI 信息以绕过 SNI RST
