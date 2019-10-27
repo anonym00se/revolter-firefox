@@ -7,14 +7,11 @@ compiler: clang
 git:
   depth: 1
 
-branches:
-  only:
-    - master
-
 env:
-  - TOOLTOOL_DIR=$TRAVIS_BUILD_DIR/tools
-  - SHELL=/bin/bash
-  - REVOLTER_FIREFOX_VERSION=v68.0.$TRAVIS_BUILD_NUMBER
+  global:
+    - TOOLTOOL_DIR=$TRAVIS_BUILD_DIR/tools
+    - SHELL=/bin/bash
+    - REVOLTER_FIREFOX_VERSION=v68.0.$TRAVIS_BUILD_NUMBER
 
 matrix:
   include:
