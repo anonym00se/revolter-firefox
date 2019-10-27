@@ -15,11 +15,11 @@
 
 [![构建状态](https://dev.azure.com/xmader/apps/_apis/build/status/revolter-firefox)](https://dev.azure.com/xmader/apps/_build/latest?definitionId=21) 
 
-[![总下载数](https://img.shields.io/github/downloads/Xmader/revolter-firefox/total.svg)](https://github.com/Xmader/revolter-firefox/releases)
+[![总下载数](https://img.shields.io/github/downloads/revolter-firefox/revolter-firefox/total.svg)](https://github.com/revolter-firefox/revolter-firefox/releases)
 
 ## 下载
 
-[Releases](https://github.com/Xmader/revolter-firefox/releases)
+[Releases](https://github.com/revolter-firefox/revolter-firefox/releases)
 
 ## 安装使用
 
@@ -40,7 +40,7 @@ https://archive.mozilla.org/pub/firefox/releases/68.0.1esr/
 5. 测试 DoH 和 ESNI 已经启用  
 打开 https://www.cloudflare.com/ssl/encrypted-sni/ , 点击 `Check My Browser` ，会看到测试全部通过
 
-6. [下载](https://github.com/Xmader/revolter-firefox/releases) nss3.dll 文件 (Windows) 或 libssl3.so 文件 (Linux)，覆盖到 firefox 的安装目录中  
+6. [下载](https://github.com/revolter-firefox/revolter-firefox/releases) nss3.dll 文件 (Windows) 或 libssl3.so 文件 (Linux)，覆盖到 firefox 的安装目录中  
 记得备份原始文件
 
 ## 备注
