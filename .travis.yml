@@ -75,6 +75,7 @@ script:
 # build
   - sudo chown root:root ~/  # solve `wine: '/home/travis' is not owned by you, refusing to create a configuration directory there`
   - sudo ./revolter-firefox-nss-build.sh
+  - sudo chown -R travis:travis ~/
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
@@ -90,14 +91,14 @@ before_deploy:
   - git tag $REVOLTER_FIREFOX_VERSION
 
 deploy:
-  - provider: releases
-    edge: true
-    tag_name: $REVOLTER_FIREFOX_VERSION
-    target_commitish: $TRAVIS_COMMIT
-    name: $REVOLTER_FIREFOX_VERSION
-    release_notes: "&nbsp;"
-    file: "/dist/**/*.@(dll|so)"
-    file_glob: true
-    on:
-      all_branch: true
+  provider: releases
+  edge: true
+  tag_name: $REVOLTER_FIREFOX_VERSION
+  target_commitish: $TRAVIS_COMMIT
+  name: $REVOLTER_FIREFOX_VERSION
+  release_notes: "&nbsp;"
+  file: "/dist/**/*.@(dll|so)"
+  file_glob: true
+  on:
+    all_branches: true
 
