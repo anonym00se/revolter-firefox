@@ -13,7 +13,7 @@
 
 > 支持通过[编辑配置文件](#关于配置文件)，对在每一个网站上的行为进行精细化配置 (去除、保留或替换 SNI 信息)
 
-[![构建状态](https://dev.azure.com/xmader/apps/_apis/build/status/revolter-firefox)](https://dev.azure.com/xmader/apps/_build/latest?definitionId=21) 
+[![构建状态](https://api.travis-ci.org/revolter-firefox/revolter-firefox.svg)](https://travis-ci.org/revolter-firefox/revolter-firefox/) 
 
 [![总下载数](https://img.shields.io/github/downloads/revolter-firefox/revolter-firefox/total.svg)](https://github.com/revolter-firefox/revolter-firefox/releases)
 
