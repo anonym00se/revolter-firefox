@@ -73,6 +73,7 @@ before_script:
 
 script:
 # build
+  - sudo chown root:root ~/  # solve `wine: '/home/travis' is not owned by you, refusing to create a configuration directory there`
   - sudo ./revolter-firefox-nss-build.sh
 
 after_success:
@@ -97,4 +98,6 @@ deploy:
     release_notes: "&nbsp;"
     file: "/dist/**/*.@(dll|so)"
     file_glob: true
+    on:
+      all_branch: true
 
