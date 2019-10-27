@@ -1,8 +1,6 @@
 dist: xenial
 
-language: c
-
-compiler: clang
+language: minimal
 
 git:
   depth: 1
@@ -11,7 +9,9 @@ env:
   global:
     - TOOLTOOL_DIR=$TRAVIS_BUILD_DIR/tools
     - SHELL=/bin/bash
-    - REVOLTER_FIREFOX_VERSION=v68.0.$TRAVIS_BUILD_NUMBER
+    - REVOLTER_FIREFOX_VERSION=v68.1.$TRAVIS_BUILD_NUMBER
+    - CC=clang-9
+    - CXX=clang++-9
 
 matrix:
   include:
@@ -48,6 +48,8 @@ matrix:
         - wine --version
 
 before_script:
+  - timing () { while true; do date -u -Is; sleep 30; done }
+  - timing &
   - echo "building $REVOLTER_FIREFOX_VERSION"
 # mozconfig
   - echo -e "ac_add_options MOZ_PGO=1\nac_add_options --disable-av1\n" > mozconfig
@@ -58,10 +60,15 @@ before_script:
       cat mozconfig-win >> mozconfig; 
     fi
   - cat mozconfig
-# mach bootstrap
+# install lastest llvm
+  - sudo apt-get remove -y llvm* clang* llvm clang
+  # - sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+  - wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+  - sudo add-apt-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
   - sudo apt-get update
+  - sudo apt-get install -y clang-9 llvm-9-dev
+# mach bootstrap
   - sudo apt-get install -y autoconf2.13 build-essential nodejs python-dev python-pip python-setuptools unzip uuid zip
-  - sudo apt-get install -y llvm-6.0
   - sudo ./mach bootstrap --application-choice=browser --no-interactive
 
 script:
