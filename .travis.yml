@@ -5,6 +5,10 @@ language: minimal
 git:
   depth: 1
 
+branches:
+  only:
+    - esr68
+
 env:
   global:
     - TOOLTOOL_DIR=$TRAVIS_BUILD_DIR/tools
@@ -97,7 +101,9 @@ deploy:
   target_commitish: $TRAVIS_COMMIT
   name: $REVOLTER_FIREFOX_VERSION
   release_notes: "&nbsp;"
-  file: "/dist/**/*.@(dll|so)"
+  file:
+    - ./dist/**/*.dll
+    - ./dist/**/*.so
   file_glob: true
   on:
     all_branches: true
