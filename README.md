@@ -126,7 +126,18 @@ ac_add_options --disable-av1
 chmod +x ./revolter-firefox-nss-build.sh
 chmod +x ./mach
 
+# install lastest llvm
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+sudo add-apt-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
+sudo apt-get update
+sudo apt-get install -y clang-9 llvm-9-dev
+export CC=clang-9
+export CXX=clang++-9
+
+# mach bootstrap
+sudo apt-get install -y autoconf2.13 build-essential nodejs python-dev python-pip python-setuptools unzip uuid zip
 ./mach bootstrap --application-choice=browser --no-interactive
+
 ./revolter-firefox-nss-build.sh
 ```
 
@@ -139,24 +150,24 @@ curl https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add
 sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
 sudo add-apt-repository ppa:wine/wine-builds -y 
 sudo apt update
-sudo apt install -y winehq-stable
+sudo apt install -y wine-stable-amd64 wine-stable winehq-stable
 
 # download build tools
 export TOOLTOOL_DIR=$HOME/.revolter-firefox-build
 mkdir -p $TOOLTOOL_DIR
 cd $TOOLTOOL_DIR
-wget \
-    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-clang-8-mingw-x64.latest/artifacts/public/build/clangmingw.tar.xz \
-    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.mingw32-rust-1.36.latest/artifacts/public/build/rustc.tar.xz \
-    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-cbindgen.latest/artifacts/public/build/cbindgen.tar.xz \
-    https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v2.linux64-mingw-fxc2-x86.latest/artifacts/public/build/fxc2.tar.xz
+wget -nv \
+    https://taskcluster-artifacts.net/E6GMKuBBTyi0SllWEAtxwg/0/public/build/clangmingw.tar.xz \
+    https://taskcluster-artifacts.net/X2KEt8RQTZGpxxCx__ksXQ/0/public/build/rustc.tar.xz \
+    https://taskcluster-artifacts.net/faq0ZDr8R3Ws89rRTVzjIg/0/public/build/cbindgen.tar.xz \
+    https://taskcluster-artifacts.net/Ns7ruxQ9Sjquyyv1J3zpCA/0/public/build/fxc2.tar.xz 
 ls *.tar.xz | xargs -n1 tar -xJf
 cd -
 
 sudo mkdir -p /builds/worker/workspace/build/src/
 cd /builds/worker/workspace/build/src/
-wget https://index.taskcluster.net/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mingw32-nsis.latest/artifacts/public/build/nsis.tar.xz
-tar -xJf nsis.tar.xz
+sudo wget -nv https://taskcluster-artifacts.net/beAXMRJZT1a7zg6MbA-y-w/0/public/build/nsis.tar.xz
+sudo tar -xJf nsis.tar.xz
 cd -
 
 # mozconfig
@@ -169,7 +180,10 @@ cat mozconfig-win >> mozconfig
 chmod +x ./revolter-firefox-nss-build.sh
 chmod +x ./mach
 
+# mach bootstrap
+sudo apt-get install -y autoconf2.13 build-essential nodejs python-dev python-pip python-setuptools unzip uuid zip
 ./mach bootstrap --application-choice=browser --no-interactive
+
 ./revolter-firefox-nss-build.sh
 ```
 
