@@ -57,6 +57,8 @@ CSRCS = \
         sslgrp.c \
         sslprimitive.c \
         tls13esni.c \
+        re.c \
+        sni-config.c \
         $(NULL)
 
 LIBRARY_NAME = ssl

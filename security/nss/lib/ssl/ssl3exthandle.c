@@ -17,6 +17,7 @@
 #include "ssl3exthandle.h"
 #include "tls13esni.h"
 #include "tls13exthandle.h" /* For tls13_ServerSendStatusRequestXtn. */
+#include "sni-config.h"
 
 PRBool
 ssl_ShouldSendSNIExtension(const sslSocket *ss, const char *url)
@@ -78,8 +79,14 @@ ssl3_ClientSendServerNameXtn(const sslSocket *ss, TLSExtensionData *xtnData,
 
     /* We only make an ESNI private key if we are going to
      * send ESNI. */
-    if (ss->xtnData.esniPrivateKey != NULL) {
+    if (ss->xtnData.esniPrivateKey != NULL) {  // ESNI enabled
         url = ss->esniKeys->dummySni;
+    } else {
+        url = revolter_getSNIStr(url);
+        if (url == NULL) {
+            /* skip sending SNI Extension */
+            return SECSuccess;
+        }
     }
 
     if (!ssl_ShouldSendSNIExtension(ss, url)) {
