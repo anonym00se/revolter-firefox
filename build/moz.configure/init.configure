@@ -317,9 +317,7 @@ def mozconfig_options(mozconfig, automation, help):
                           'automation.')
                 die("Please don't use them.")
         helper = __sandbox__._helper
-        log.info('Adding configure options from %s' % mozconfig['path'])
         for arg in mozconfig['configure_args']:
-            log.info('  %s' % arg)
             # We could be using imply_option() here, but it has other
             # contraints that don't really apply to the command-line
             # emulation that mozconfig provides.
@@ -328,7 +326,6 @@ def mozconfig_options(mozconfig, automation, help):
         def add(key, value):
             if key.isupper():
                 arg = '%s=%s' % (key, value)
-                log.info('  %s' % arg)
                 helper.add(arg, origin='mozconfig', args=helper._args)
 
         for key, value in mozconfig['env']['added'].iteritems():
@@ -444,7 +441,6 @@ set_config('PYTHON3_VERSION', depends_if(python3)(lambda p: p.str_version))
 
 
 @depends(check_build_environment, 'MOZ_AUTOMATION', '--help')
-@checking('for vcs source checkout')
 @imports('os')
 def vcs_checkout_type(build_env, automation, help):
     if os.path.exists(os.path.join(build_env.topsrcdir, '.hg')):
@@ -467,7 +463,6 @@ git = check_prog('GIT', ('git',), allow_missing=True,
 
 
 @depends_if(hg)
-@checking('for Mercurial version')
 @imports('os')
 @imports('re')
 def hg_version(hg):
@@ -526,7 +521,6 @@ def hg_config(build_env, hg, version):
 
 
 @depends_if(git)
-@checking('for Git version')
 @imports('re')
 def git_version(git):
     out = check_cmd_output(git, '--version').rstrip()
@@ -579,7 +573,6 @@ def vcs_repository(build_env, vcs_checkout_type, hg, git):
 
 
 @depends_if(vcs_repository)
-@checking('for sparse checkout')
 def vcs_sparse_checkout(repo):
     return repo.sparse_checkout_present()
 
@@ -792,7 +785,6 @@ def config_sub(shell, triplet):
 
 
 @depends('--host', shell)
-@checking('for host system type', lambda h: h.alias)
 @imports('os')
 @imports('subprocess')
 @imports('sys')
@@ -829,7 +821,6 @@ host = help_host_target | real_host
 
 
 @depends('--target', real_host, shell, '--enable-project', '--enable-application')
-@checking('for target system type', lambda t: t.alias)
 @imports(_from='__builtin__', _import='ValueError')
 def real_target(value, host, shell, project, application):
     # Because --enable-project is implied by --enable-application, and
