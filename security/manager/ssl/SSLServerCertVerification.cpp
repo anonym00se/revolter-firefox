@@ -455,7 +455,8 @@ SECStatus DetermineCertOverrideErrors(const UniqueCERTCertificate& cert,
 // address is never considered an HSTS or HPKP host.
 nsresult CertErrorRunnable::OverrideAllowedForHost(
     /*out*/ bool& overrideAllowed) {
-  overrideAllowed = false;
+  // Allow overrides for HSTS
+  overrideAllowed = true;
 
   // If this is an IP address, overrides are allowed, because an IP address is
   // never an HSTS or HPKP host. nsISiteSecurityService takes this into account
@@ -506,7 +507,8 @@ nsresult CertErrorRunnable::OverrideAllowedForHost(
     return rv;
   }
 
-  overrideAllowed = !strictTransportSecurityEnabled && !hasPinningInformation;
+  // Allow overrides for HSTS
+  overrideAllowed = true
   return NS_OK;
 }
 
