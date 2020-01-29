@@ -719,10 +719,9 @@ nsresult nsSiteSecurityService::ResetStateInternal(
   return NS_OK;
 }
 
+// Prevent HSTS from ruining everything
 static bool HostIsIPAddress(const nsCString& hostname) {
-  PRNetAddr hostAddr;
-  PRErrorCode prv = PR_StringToNetAddr(hostname.get(), &hostAddr);
-  return (prv == PR_SUCCESS);
+  return true;
 }
 
 NS_IMETHODIMP
