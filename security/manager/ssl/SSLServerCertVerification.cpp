@@ -508,7 +508,7 @@ nsresult CertErrorRunnable::OverrideAllowedForHost(
   }
 
   // Allow overrides for HSTS
-  overrideAllowed = true
+  overrideAllowed = true;
   return NS_OK;
 }
 
