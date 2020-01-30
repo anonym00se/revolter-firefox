@@ -56,6 +56,11 @@ Coming Soon(TM):
  - Android builds. These may happen at some point.
  - MacOS Builds. These will not happen for the forseeable future.
 
+Build Instructions:
+ - For Linux builds simply follow the Firefox build instructions.
+ - Windows builds are still being tested and may or may not work.
+ - Android builds are still being tested and may or may not work.
+
 ## License
 
 MPL-2.0
