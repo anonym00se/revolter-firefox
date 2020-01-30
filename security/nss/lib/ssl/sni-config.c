@@ -193,6 +193,10 @@ ConfigItem defaultConfig[] = {
     {true, ".*.mozilla.org", BYPASS},
     {true, ".*.alexa.com", BYPASS},
     {true, ".*.cdn.branch.io", BYPASS},
+    {true, ".*.sstatic.net", BYPASS},
+    {true, ".*.4cdn.org", REPLACE, "ssl566134.cloudflaressl.com"},
+    {true, ".*.4chan.org", REPLACE, "ssl538051.cloudflaressl.com"},
+    {true, ".*.4channel.org", REPLACE, "ssl422133.cloudflaressl.com"},
     {true, ".*.blogger.com", REPLACE, "googledrive.com"},
     {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
     {true, ".*.ttvnw.net", REPLACE, "www.amazon.com"},
@@ -200,12 +204,14 @@ ConfigItem defaultConfig[] = {
     {true, ".*.ytimg.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.googlevideo.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
+    {true, ".*.urbandictionary.com", "d.ssl.fastly.net"},
+    {true, ".*.thepiratebay.org", "ssl778318.cloudflaressl.com"},
     {false, "twitch.tv", REPLACE, "twitch.map.fastly.net"},
     {false, "play.google.com", REPLACE, "www.google.com"},
 };
 
 ConfigItem* config = defaultConfig;
-int configItemsCount = 24;
+int configItemsCount = 30;
 bool configRead = false;
 
 static const char* configRegex = "^(\\S+),\\s*(drop|bypass|replace)(,\\s*\\S+)?";
