@@ -36,7 +36,7 @@ The following websites are broken but can possibly be fixed:
  - Tor Project (Certificate error, otherwise works fine)
  - Twitch (Currently chat only)
 
-The following websites do not, and probably will not, work:
+The following websites currently do not work and probably never will:
  - Reddit
  - Twitter
 
