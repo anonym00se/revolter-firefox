@@ -177,11 +177,35 @@ ssize_t getline(char** lineptr, size_t* n, FILE* stream) {
 #include "sni-config.h"
 
 ConfigItem defaultConfig[] = {
-    {true, ".*", DROP},  // drop any hostnames
+    {true, ".*", DROP}, // Drop anything that makes it past any of the filters
+    {true, ".*.goog", BYPASS},
+    {true, ".*.gov", BYPASS},
+    {true, ".*.mn.us", BYPASS},
+    {true, ".*.cloudflare.com", BYPASS},
+    {true, ".*.cloudfront.net", BYPASS},
+    {true, ".*.google.com", BYPASS},
+    {true, ".*.googleapis.com", BYPASS},
+    {true, ".*.googledrive.com", BYPASS},
+    {true, ".*.googleusercontent.com", BYPASS},
+    {true, ".*.gstatic.com", BYPASS},
+    {true, ".*.1e100.net", BYPASS},
+    {true, ".*.forbes.com", BYPASS},
+    {true, ".*.mozilla.org", BYPASS},
+    {true, ".*.alexa.com", BYPASS},
+    {true, ".*.cdn.branch.io", BYPASS},
+    {true, ".*.blogger.com", REPLACE, "googledrive.com"},
+    {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
+    {true, ".*.ttvnw.net", REPLACE, "www.amazon.com"},
+    {true, ".*.twitch.tv", REPLACE, "amazonaws.com"},
+    {true, ".*.ytimg.com", REPLACE, "www.youtubeeducation.com"},
+    {true, ".*.googlevideo.com", REPLACE, "www.youtubeeducation.com"},
+    {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
+    {false, "twitch.tv", REPLACE, "twitch.map.fastly.net"},
+    {false, "play.google.com", REPLACE, "www.google.com"},
 };
 
 ConfigItem* config = defaultConfig;
-int configItemsCount = 1;
+int configItemsCount = 24;
 bool configRead = false;
 
 static const char* configRegex = "^(\\S+),\\s*(drop|bypass|replace)(,\\s*\\S+)?";
@@ -265,55 +289,6 @@ static ConfigItem* readConfig() {
     char* configFilePath = strcat(strcat(execPath, PATH_SEP), "sni.config");
     // printf("%s\n", configFilePath);
 
-    if (access(configFilePath, 0) != -1) {  // file exists
-
-        FILE* stream;
-        char* line = NULL;
-        size_t len = 0;
-
-        stream = fopen(configFilePath, "r");
-
-        ConfigItem* _config = (ConfigItem*)calloc(configItemsCount, sizeof(ConfigItem));
-        memmove(_config, config, configItemsCount * sizeof(ConfigItem));  // copy default config items
-
-        while (getline(&line, &len, stream) != -1) {
-            struct slre_cap* caps = calloc(4, sizeof(struct slre_cap));
-
-            int match = slre_match(configRegex, line, strlen(line), caps, 4, 0);
-
-            if (match > 0) {
-                _config = (ConfigItem*)realloc(_config, (configItemsCount + 1) * sizeof(ConfigItem));
-
-                int _method = getConfigMethod(getCapStr(caps[1]));
-                char* _hostname = getCapStr(caps[0]);
-                char* _hostnameRegexp = getHostnameRegexp(_hostname);
-
-                if (_hostnameRegexp == NULL) {
-                    _config[configItemsCount].isRegexp = false;
-                    _config[configItemsCount].hostname = _hostname;
-                } else {
-                    _config[configItemsCount].isRegexp = true;
-                    _config[configItemsCount].hostname = _hostnameRegexp;
-                }
-
-                _config[configItemsCount].method = _method;
-                _config[configItemsCount].replaceSNI = _method == REPLACE ? formatReplaceSNI(getCapStr(caps[2])) : NULL;
-
-                free(caps);
-
-                configItemsCount++;
-            }
-        }
-
-        config = _config;
-
-        free(line);
-        fclose(stream);
-
-    } else {
-        // printf("%s\n", "file not found");
-    }
-
     configRead = true;
 
     return config;
@@ -332,7 +307,7 @@ char* revolter_getSNIStr(char* url) {
     char* _url = (char*)malloc(strlen(url) + 1);
     strcpy(_url, url);
 
-    for (int i = configItemsCount - 1; i >= 0; i--) {  // reverse, match the last item at first
+    for (int i = configItemsCount - 1; i >= 0; i--) { //Reverse the order of the filters
         ConfigItem item = config[i];
 
         bool hostnameMatched = (item.isRegexp && regexpTest(item.hostname, _url)) || strcmp(item.hostname, _url) == 0;
