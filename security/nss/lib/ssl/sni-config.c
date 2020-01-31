@@ -202,14 +202,20 @@ ConfigItem defaultConfig[] = {
     {true, ".*.4channel.org", REPLACE, "ssl422133.cloudflaressl.com"},
     {true, ".*.blogger.com", REPLACE, "googledrive.com"},
     {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
+    {true, ".*.pinterest.com", REPLACE, "pinterestmail.com"},
     {true, ".*.twitch.tv", REPLACE, "amazonaws.com"},
+    {true, ".*.reddituploads.com", REPLACE, "redditinc.com"},
+    {true, ".*.redditstatic.com", REPLACE, "redditinc.com"},
+    {true, ".*.redditmedia.com", REPLACE, "redditinc.com"},
+    {true, ".*.redd.it", REPLACE, "redditinc.com"},
+    {true, ".*.reddit.com", REPLACE, "redditinc.com"},
     {true, ".*.ytimg.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.googlevideo.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.urbandictionary.com", REPLACE, "d.ssl.fastly.net"},
     {true, ".*.thepiratebay.org", REPLACE, "ssl778318.cloudflaressl.com"},
     {false, "play.google.com", REPLACE, "www.google.com"},
-    {true, "*.ord02.abs.hls.ttvnw.net", BYPASS}
+    {true, "*.ord02.abs.hls.ttvnw.net", BYPASS},
 };
 
 ConfigItem* config = defaultConfig;
