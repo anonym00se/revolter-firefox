@@ -16,6 +16,8 @@ The following websites are supported and have extra bypass rules to make it hard
  - 4chan
  - Blogspot
  - Google Play
+ - Pinterest
+ - Reddit
  - The Pirate Bay
  - Urban Dictionary
  - YouTube
@@ -37,7 +39,6 @@ The following websites are broken but can possibly be fixed:
  - Twitch (Currently chat only)
 
 The following websites currently do not work and probably never will:
- - Reddit
  - Twitter
 
 Things you can try that may make more websites accessible are:
