@@ -196,20 +196,20 @@ ConfigItem defaultConfig[] = {
     {true, ".*.cdn.branch.io", BYPASS},
     {true, ".*.sstatic.net", BYPASS},
     {true, ".*.stackoverflow.com", BYPASS},
+    {true, ".*.getpocket.com", BYPASS},
     {true, ".*.4cdn.org", REPLACE, "ssl566134.cloudflaressl.com"},
     {true, ".*.4chan.org", REPLACE, "ssl538051.cloudflaressl.com"},
     {true, ".*.4channel.org", REPLACE, "ssl422133.cloudflaressl.com"},
     {true, ".*.blogger.com", REPLACE, "googledrive.com"},
     {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
-    {true, ".*.ttvnw.net", REPLACE, "www.amazon.com"},
     {true, ".*.twitch.tv", REPLACE, "amazonaws.com"},
     {true, ".*.ytimg.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.googlevideo.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.urbandictionary.com", REPLACE, "d.ssl.fastly.net"},
     {true, ".*.thepiratebay.org", REPLACE, "ssl778318.cloudflaressl.com"},
-    {false, "twitch.tv", REPLACE, "twitch.map.fastly.net"},
     {false, "play.google.com", REPLACE, "www.google.com"},
+    {true, "*.ord02.abs.hls.ttvnw.net", BYPASS}
 };
 
 ConfigItem* config = defaultConfig;
