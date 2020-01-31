@@ -19,100 +19,11 @@
 #include <libgen.h>
 #include <unistd.h>
 
-#define PATH_SEP "/"
-
-static char* getExecutableDir() {
-    char buffer[PATH_MAX] = "";
-    char* path = buffer;
-    realpath("/proc/self/exe", buffer);
-    return dirname(path);
-}
-
 #elif defined(_WIN32)
 #include <io.h>
 #include <windows.h>
 
 #define CP_GB18030 54936
-
-#define PATH_SEP "\\"
-
-static int getExecutablePath(char* out, int capacity, int* dirname_length) {
-    wchar_t buffer1[MAX_PATH];
-    wchar_t buffer2[MAX_PATH];
-    wchar_t* path = NULL;
-    int length = -1;
-
-    for (;;) {
-        DWORD size;
-        int length_, length__;
-
-        size = GetModuleFileNameW(NULL, buffer1, sizeof(buffer1) / sizeof(buffer1[0]));
-
-        if (size == 0)
-            break;
-        else if (size == (DWORD)(sizeof(buffer1) / sizeof(buffer1[0]))) {
-            DWORD size_ = size;
-            do {
-                wchar_t* path_;
-
-                path_ = (wchar_t*)realloc(path, sizeof(wchar_t) * size_ * 2);
-                if (!path_) break;
-                size_ *= 2;
-                path = path_;
-                size = GetModuleFileNameW(NULL, path, size_);
-            } while (size == size_);
-
-            if (size == size_) break;
-        } else
-            path = buffer1;
-
-        if (!_wfullpath(buffer2, path, MAX_PATH)) break;
-        length_ = (int)wcslen(buffer2);
-        length__ = WideCharToMultiByte(CP_GB18030, 0, buffer2, length_, out, capacity, NULL, NULL);
-
-        if (length__ == 0)
-            length__ = WideCharToMultiByte(CP_GB18030, 0, buffer2, length_, NULL, 0, NULL, NULL);
-        if (length__ == 0) break;
-
-        if (length__ <= capacity && dirname_length) {
-            int i;
-
-            for (i = length__ - 1; i >= 0; --i) {
-                if (out[i] == '\\') {
-                    *dirname_length = i;
-                    break;
-                }
-            }
-        }
-
-        length = length__;
-
-        break;
-    }
-
-    if (path != buffer1) free(path);
-
-    return length;
-}
-
-static char* getExecutableDir() {
-    int dirname_length;
-    char* path = (char*)malloc(MAX_PATH + 1);
-
-    getExecutablePath(path, MAX_PATH, &dirname_length);
-    path[dirname_length] = '\0';
-
-    return path;
-}
-
-#else
-
-#define PATH_SEP "/"
-
-static char* getExecutableDir() {
-    printf("%s", "NotImplemented");
-    abort();
-}
 
 #endif
 
@@ -177,50 +88,48 @@ ssize_t getline(char** lineptr, size_t* n, FILE* stream) {
 #include "sni-config.h"
 
 ConfigItem defaultConfig[] = {
-    {true, ".*", DROP}, // Drop anything that makes it past any of the filters
-    {true, ".*.goog", BYPASS},
-    {true, ".*.gov", BYPASS},
-    {true, ".*.mn.us", BYPASS},
-    {true, ".*.cloudflare.com", BYPASS},
-    {true, ".*.cloudfront.net", BYPASS},
-    {true, ".*.google.com", BYPASS},
-    {true, ".*.googleapis.com", BYPASS},
-    {true, ".*.googledrive.com", BYPASS},
-    {true, ".*.googleusercontent.com", BYPASS},
-    {true, ".*.gstatic.com", BYPASS},
-    {true, ".*.1e100.net", BYPASS},
-    {true, ".*.forbes.com", BYPASS},
-    {true, ".*.mozilla.org", BYPASS},
-    {true, ".*.mozilla.net", BYPASS},
-    {true, ".*.alexa.com", BYPASS},
-    {true, ".*.cdn.branch.io", BYPASS},
-    {true, ".*.sstatic.net", BYPASS},
-    {true, ".*.stackoverflow.com", BYPASS},
-    {true, ".*.getpocket.com", BYPASS},
-    {true, ".*.4cdn.org", REPLACE, "ssl566134.cloudflaressl.com"},
-    {true, ".*.4chan.org", REPLACE, "ssl538051.cloudflaressl.com"},
-    {true, ".*.4channel.org", REPLACE, "ssl422133.cloudflaressl.com"},
-    {true, ".*.blogger.com", REPLACE, "googledrive.com"},
-    {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
-    {true, ".*.pinterest.com", REPLACE, "pinterestmail.com"},
-    {true, ".*.twitch.tv", REPLACE, "amazonaws.com"},
-    {true, ".*.reddituploads.com", REPLACE, "redditinc.com"},
-    {true, ".*.redditstatic.com", REPLACE, "redditinc.com"},
-    {true, ".*.redditmedia.com", REPLACE, "redditinc.com"},
-    {true, ".*.redd.it", REPLACE, "redditinc.com"},
-    {true, ".*.reddit.com", REPLACE, "redditinc.com"},
-    {true, ".*.ytimg.com", REPLACE, "www.youtubeeducation.com"},
-    {true, ".*.googlevideo.com", REPLACE, "www.youtubeeducation.com"},
-    {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
-    {true, ".*.urbandictionary.com", REPLACE, "d.ssl.fastly.net"},
-    {true, ".*.thepiratebay.org", REPLACE, "ssl778318.cloudflaressl.com"},
-    {false, "play.google.com", REPLACE, "www.google.com"},
     {true, "*.ord02.abs.hls.ttvnw.net", BYPASS},
+    {false, "play.google.com", REPLACE, "www.google.com"},
+    {true, ".*.thepiratebay.org", REPLACE, "ssl778318.cloudflaressl.com"},
+    {true, ".*.urbandictionary.com", REPLACE, "d.ssl.fastly.net"},
+    {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
+    {true, ".*.googlevideo.com", REPLACE, "www.youtubeeducation.com"},
+    {true, ".*.ytimg.com", REPLACE, "www.youtubeeducation.com"},
+    {true, ".*.reddit.com", REPLACE, "redditinc.com"},
+    {true, ".*.redd.it", REPLACE, "redditinc.com"},
+    {true, ".*.redditmedia.com", REPLACE, "redditinc.com"},
+    {true, ".*.redditstatic.com", REPLACE, "redditinc.com"},
+    {true, ".*.reddituploads.com", REPLACE, "redditinc.com"},
+    {true, ".*.twitch.tv", REPLACE, "amazonaws.com"},
+    {true, ".*.pinterest.com", REPLACE, "pinterestmail.com"},
+    {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
+    {true, ".*.blogger.com", REPLACE, "googledrive.com"},
+    {true, ".*.4channel.org", REPLACE, "ssl422133.cloudflaressl.com"},
+    {true, ".*.4chan.org", REPLACE, "ssl538051.cloudflaressl.com"},
+    {true, ".*.4cdn.org", REPLACE, "ssl566134.cloudflaressl.com"},
+    {true, ".*.getpocket.com", BYPASS},
+    {true, ".*.stackoverflow.com", BYPASS},
+    {true, ".*.sstatic.net", BYPASS},
+    {true, ".*.cdn.branch.io", BYPASS},
+    {true, ".*.alexa.com", BYPASS},
+    {true, ".*.mozilla.net", BYPASS},
+    {true, ".*.mozilla.org", BYPASS},
+    {true, ".*.forbes.com", BYPASS},
+    {true, ".*.1e100.net", BYPASS},
+    {true, ".*.gstatic.com", BYPASS},
+    {true, ".*.googleusercontent.com", BYPASS},
+    {true, ".*.googledrive.com", BYPASS},
+    {true, ".*.googleapis.com", BYPASS},
+    {true, ".*.google.com", BYPASS},
+    {true, ".*.cloudfront.net", BYPASS},
+    {true, ".*.cloudflare.com", BYPASS},
+    {true, ".*.mn.us", BYPASS},
+    {true, ".*.gov", BYPASS},
+    {true, ".*.goog", BYPASS},
+    {true, ".*", DROP}, // Drop SNI on anything that makes it past any of the filters
 };
 
 ConfigItem* config = defaultConfig;
-int configItemsCount = sizeof(defaultConfig)/sizeof(*defaultConfig);
-bool configRead = false;
 
 static const char* configRegex = "^(\\S+),\\s*(drop|bypass|replace)(,\\s*\\S+)?";
 static const char* replaceSNIRegex = "^,\\s*(\\S+)$";
@@ -294,34 +203,18 @@ static bool isHostnameARegexp(char* str) {
     return getHostnameRegexp(str) != NULL;
 }
 
-static ConfigItem* readConfig() {
-    if (config != defaultConfig || configRead) {
-        return config;
-    }
-
-    char* execPath = getExecutableDir();
-    char* configFilePath = strcat(strcat(execPath, PATH_SEP), "sni.config");
-    // printf("%s\n", configFilePath);
-
-    configRead = true;
-
-    return config;
-}
-
 static bool regexpTest(char* regexp, char* teststr) {
     int match = slre_match(regexp, teststr, strlen(teststr), NULL, 0, 0);
     return match > 0;
 }
 
-// export
+// Export
 char* revolter_getSNIStr(char* url) {
-    readConfig();
-
-    // copy string
+    // Copy string
     char* _url = (char*)malloc(strlen(url) + 1);
     strcpy(_url, url);
 
-    for (int i = configItemsCount - 1; i >= 0; i--) { //Reverse the order of the filters
+    for (int i = 0; i < 0, i++;) { // Loop until match is found
         ConfigItem item = config[i];
 
         bool hostnameMatched = (item.isRegexp && regexpTest(item.hostname, _url)) || strcmp(item.hostname, _url) == 0;
@@ -344,15 +237,4 @@ char* revolter_getSNIStr(char* url) {
 
     // fallback: add SNI as normal
     return _url;
-}
-
-static void _print_config() {
-    readConfig();
-
-    printf("length: %d\n", configItemsCount);
-
-    for (int i = configItemsCount - 1; i >= 0; i--) {  // reverse, match the last item at first
-        ConfigItem c = config[i];
-        printf("isRegexp: %d hostname: '%s' method: %d replaceSNI: '%s' \n", c.isRegexp, c.hostname, c.method, c.replaceSNI);
-    }
 }
