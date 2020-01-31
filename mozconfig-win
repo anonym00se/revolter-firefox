@@ -23,7 +23,7 @@ unset MAKECAB
 #    TOOLTOOL_DIR
 #    RUSTC
 #    CARGO
-. "$topsrcdir/browser/config/mozconfigs/common"
+#. "$topsrcdir/browser/config/mozconfigs/common"
 
 export MOZ_PACKAGE_JSSHELL=1
 
@@ -33,6 +33,7 @@ ac_add_options --with-toolchain-prefix=x86_64-w64-mingw32-
 
 ac_add_options --disable-warnings-as-errors
 MOZ_COPY_PDBS=1
+MOZ_FETCHES_DIR=~/.mozbuild
 
 # This replicates Tor's configuration
 ac_add_options --enable-proxy-bypass-protection
