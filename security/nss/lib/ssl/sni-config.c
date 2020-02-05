@@ -197,6 +197,7 @@ ConfigItem defaultConfig[] = {
     {true, ".*.sstatic.net", BYPASS},
     {true, ".*.stackoverflow.com", BYPASS},
     {true, ".*.getpocket.com", BYPASS},
+    {true, ".*.raspberrypi.org", BYPASS},
     {true, ".*.4cdn.org", REPLACE, "ssl566134.cloudflaressl.com"},
     {true, ".*.4chan.org", REPLACE, "ssl538051.cloudflaressl.com"},
     {true, ".*.4channel.org", REPLACE, "ssl422133.cloudflaressl.com"},
