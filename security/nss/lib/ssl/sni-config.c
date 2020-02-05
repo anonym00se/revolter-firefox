@@ -214,6 +214,7 @@ ConfigItem defaultConfig[] = {
     {true, ".*.youtube.com", REPLACE, "www.youtubeeducation.com"},
     {true, ".*.urbandictionary.com", REPLACE, "d.ssl.fastly.net"},
     {true, ".*.thepiratebay.org", REPLACE, "ssl778318.cloudflaressl.com"},
+    {true, ".*.coolmathgames.com", REPLACE, "c.sni.fastly.net"},
     {false, "play.google.com", REPLACE, "www.google.com"},
     {true, "*.ord02.abs.hls.ttvnw.net", BYPASS},
 };
