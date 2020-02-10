@@ -49,17 +49,30 @@ Things you can try that may make more websites accessible are:
 If a website is broken or blocked, please either submit an issue or fill out this Google Form:
 https://forms.gle/L6iSHYJN8d1WRZho6
 
-Upcoming Features:
+TODO:
  - Builds for Windows and Linux. These will happen when the browser is more stable.
  - Integration with HTTPS Everywhere or a similar addon
 
 Coming Soon(TM):
  - Android builds. These may happen at some point.
- - MacOS Builds. These will not happen for the forseeable future.
+ - MacOS Builds. These will probably happen at some point, once I get Mac cross compilation working.
 
 Build Instructions:
- - For Linux builds simply follow the Firefox build instructions.
- - Windows builds are still being tested and may or may not work.
+
+Linux:
+ - cp mozconfig-linux mozconfig
+ - Then follow the Firefox build instructions.
+ - ./mach package generates a packaged file after build.
+
+For Windows:
+ - Install Visual Studio 2017 and Rust v1.38.
+ - Then follow the Firefox build instructions.
+ - ./mach package generates a packaged file after build.
+
+For Mac:
+ - Mac builds are still being tested and may or may not work.
+
+For Android:
  - Android builds are still being tested and may or may not work.
 
 ## License
