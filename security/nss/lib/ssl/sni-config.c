@@ -217,6 +217,7 @@ ConfigItem defaultConfig[] = {
     {true, ".*.thepiratebay.org", REPLACE, "ssl778318.cloudflaressl.com"},
     {true, ".*.coolmathgames.com", REPLACE, "c.sni.fastly.net"},
     {false, "play.google.com", REPLACE, "www.google.com"},
+    {false, "reddit.com", REPLACE, "redditinc.com"},
     {true, "*.ord02.abs.hls.ttvnw.net", BYPASS},
 };
 
