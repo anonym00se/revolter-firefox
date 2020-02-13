@@ -12,3 +12,7 @@ DIRS += [
     'webcompat',
     'report-site-issue'
 ]
+
+FINAL_TARGET_FILES.features += [
+    'https-everywhere@eff.org.xpi'
+]
