@@ -20,9 +20,6 @@
 # WebRTC bad
 ac_add_options --disable-webrtc
 
-# Enable on release builds
-ac_add_options MOZ_PGO=1
-
 # With the following compiler toolchain:
 #CC="/home/haxalicious/.mozbuild/clang/bin/clang"
 #CXX="/home/haxalicious/.mozbuild/clang/bin/clang++"
