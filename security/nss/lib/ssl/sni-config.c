@@ -209,6 +209,7 @@ ConfigItem defaultConfig[] = {
     {true, ".*.youronlinechoices.com", BYPASS},
     {true, ".*.techradar.com", BYPASS},
     {true, ".*.supcase.com", BYPASS},
+    {true, "*.ghacks.net", BYPASS},
     {false, "extensionworkshop.com", BYPASS},
     {true, ".*.blogspot.com", REPLACE, "googledrive.com"},
     {true, ".*.pinterest.com", REPLACE, "pinterestmail.com"},
