@@ -2599,7 +2599,8 @@ bool js::GetPropertyPure(JSContext* cx, JSObject* obj, jsid id, Value* vp) {
     return true;
   }
 
-  return NativeGetPureInline(&pobj->as<NativeObject>(), id, prop, vp, cx);
+  return pobj->isNative() &&
+         NativeGetPureInline(&pobj->as<NativeObject>(), id, prop, vp, cx);
 }
 
 bool js::GetOwnPropertyPure(JSContext* cx, JSObject* obj, jsid id, Value* vp,
@@ -2616,7 +2617,8 @@ bool js::GetOwnPropertyPure(JSContext* cx, JSObject* obj, jsid id, Value* vp,
   }
 
   *found = true;
-  return NativeGetPureInline(&obj->as<NativeObject>(), id, prop, vp, cx);
+  return obj->isNative() &&
+         NativeGetPureInline(&obj->as<NativeObject>(), id, prop, vp, cx);
 }
 
 static inline bool NativeGetGetterPureInline(PropertyResult prop,

@@ -125,6 +125,7 @@ const POLICIES_TESTS = [
           SPNEGO: false,
           NTLM: false,
         },
+        PrivateBrowsing: true,
       },
     },
     lockedPrefs: {
@@ -135,6 +136,7 @@ const POLICIES_TESTS = [
       "network.negotiate-auth.allow-non-fqdn": true,
       "network.automatic-ntlm-auth.allow-proxies": false,
       "network.negotiate-auth.allow-proxies": false,
+      "network.auth.private-browsing-sso": true,
     },
   },
 
@@ -149,6 +151,7 @@ const POLICIES_TESTS = [
           SPNEGO: true,
           NTLM: true,
         },
+        PrivateBrowsing: true,
         Locked: false,
       },
     },
@@ -158,6 +161,7 @@ const POLICIES_TESTS = [
       "network.automatic-ntlm-auth.trusted-uris": "a.com, b.com",
       "network.automatic-ntlm-auth.allow-non-fqdn": true,
       "network.negotiate-auth.allow-non-fqdn": true,
+      "network.auth.private-browsing-sso": true,
     },
   },
 
@@ -421,12 +425,14 @@ const POLICIES_TESTS = [
       DNSOverHTTPS: {
         Enabled: true,
         ProviderURL: "http://example.com/provider",
+        ExcludedDomains: ["example.com", "example.org"],
         Locked: true,
       },
     },
     lockedPrefs: {
       "network.trr.mode": 2,
       "network.trr.uri": "http://example.com/provider",
+      "network.trr.excluded-domains": "example.com,example.org",
     },
   },
 
@@ -436,11 +442,13 @@ const POLICIES_TESTS = [
       DNSOverHTTPS: {
         Enabled: false,
         ProviderURL: "http://example.com/provider",
+        ExcludedDomains: ["example.com", "example.org"],
       },
     },
     unlockedPrefs: {
       "network.trr.mode": 5,
       "network.trr.uri": "http://example.com/provider",
+      "network.trr.excluded-domains": "example.com,example.org",
     },
   },
 
@@ -553,6 +561,84 @@ const POLICIES_TESTS = [
     },
     unlockedPrefs: {
       "signon.rememberSignons": false,
+    },
+  },
+
+  // POLICY: UserMessaging
+  {
+    policies: {
+      UserMessaging: {
+        ExtensionRecommendations: false,
+      },
+    },
+    unlockedPrefs: {
+      "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons": false,
+    },
+  },
+
+  {
+    policies: {
+      UserMessaging: {
+        FeatureRecommendations: false,
+      },
+    },
+    unlockedPrefs: {
+      "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features": false,
+    },
+  },
+
+  // POLICY: Permissions->Autoplay
+  {
+    policies: {
+      Permissions: {
+        Autoplay: {
+          Default: "allow-audio-video",
+          Locked: true,
+        },
+      },
+    },
+    lockedPrefs: {
+      "media.autoplay.default": 0,
+    },
+  },
+
+  {
+    policies: {
+      Permissions: {
+        Autoplay: {
+          Default: "block-audio",
+        },
+      },
+    },
+    unlockedPrefs: {
+      "media.autoplay.default": 1,
+    },
+  },
+
+  {
+    policies: {
+      Permissions: {
+        Autoplay: {
+          Default: "block-audio-video",
+        },
+      },
+    },
+    unlockedPrefs: {
+      "media.autoplay.default": 5,
+    },
+  },
+
+  // POLICY: EncryptedMediaExtensions
+
+  {
+    policies: {
+      EncryptedMediaExtensions: {
+        Enabled: false,
+        Locked: true,
+      },
+    },
+    lockedPrefs: {
+      "media.eme.enabled": false,
     },
   },
 ];
